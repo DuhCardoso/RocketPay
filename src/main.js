@@ -7,8 +7,6 @@ const ccBgColor02 = document.querySelector(".cc-bg svg > g g:nth-child(2) path")
 
 const ccLogo = document.querySelector(".cc-logo span:nth-child(2) img")
 
-console.log("TESTE")
-
 function setCardType (type){
     const colors = {
         "visa": ["#436D99", "#2D57F2"],
@@ -31,6 +29,12 @@ const securityCodePattern = {
     mask: "0000"
 }
 const securityCodeMasked = IMask(securityCode, securityCodePattern)
+securityCodeMasked.on("accept", ()=>{
+    const ccSecurity = document.querySelector(".cc-security .value")
+
+    ccSecurity.innerHTML = securityCode.value.length === 0 ? "123" : securityCodeMasked.value
+})
+
 
 
 const expirationDate = document.querySelector('#expiration-date')
@@ -49,7 +53,13 @@ const expirationDataPattern = {
         }
     }
 }
+
 const expirationDateMasked = IMask(expirationDate, expirationDataPattern)
+expirationDateMasked.on("accept", ()=>{
+    const ccExpiration = document.querySelector(".cc-expiration .value")
+
+    ccExpiration.innerHTML = expirationDate.value.length === 0 ? "02/32" : expirationDateMasked.value
+})
 
 
 const cardNumber = document.querySelector("#card-number")
@@ -57,7 +67,7 @@ const cardNumberPattern = {
     mask:[
         {
             mask: '0000 0000 0000 0000',
-            regex: /^4\d{0, 15}/,
+            regex: /^4\d{0,15}/,
             cardType: "visa",
         },
         {
@@ -81,3 +91,30 @@ const cardNumberPattern = {
 }
 
 const cardNumberMasked = IMask(cardNumber, cardNumberPattern)
+cardNumberMasked.on("accept", ()=>{
+    const ccNumber = document.querySelector(".cc-number")
+    
+    ccNumber.innerHTML = cardNumber.value.length === 0 ? "1234 5678 9012 3456" : cardNumberMasked.value
+
+    const cardType = cardNumberMasked.masked.currentMask.cardType
+    setCardType(cardType)
+})
+
+
+
+const cardHolder = document.querySelector("#card-holder")
+cardHolder.addEventListener("input", (e) => {
+    const ccHolder = document.querySelector(".cc-holder .value")
+
+    ccHolder.innerHTML = cardHolder.value.length === 0 ? "FULANO DA SILVA" : cardHolder.value
+})
+
+
+
+const addCard = document.querySelector("#addCard")
+addCard.addEventListener("click", () => {
+    alert("Cartão adicionado!")
+})
+document.querySelector("form").addEventListener("submit", (e) => {
+	return e.preventDefault()
+})
